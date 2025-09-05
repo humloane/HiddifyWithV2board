@@ -61,7 +61,7 @@ class HttpService {
             url,
             headers: requiresHeaders
                 ? (headers ?? {'Content-Type': 'application/json'})
-                : null,
+                : {'Content-Type': 'application/json'},
             body: json.encode(body),
           )
           .timeout(const Duration(seconds: 20)); // 设置超时时间

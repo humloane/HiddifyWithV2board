@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -180,10 +181,60 @@ class ProfileRepositoryImpl with ExceptionHandler, InfraLogger implements Profil
       () async {
         singbox.changeOptions(await configOptionRepository.getConfigOptions()).run();
 
+        // 预处理配置文件，移除不兼容的字段
+        await _preprocessConfigFile(tempPath);
+
         return singbox.validateConfigByPath(path, tempPath, debug).mapLeft(ProfileFailure.invalidConfig).run();
       },
       ProfileUnexpectedFailure.new,
     );
+  }
+
+  /// 预处理配置文件，移除sing-box不支持的字段
+  Future<void> _preprocessConfigFile(String filePath) async {
+    try {
+      final file = File(filePath);
+      if (!file.existsSync()) return;
+      
+      final content = await file.readAsString();
+      final processedContent = _removeUnsupportedFields(content);
+      
+      if (processedContent != content) {
+        await file.writeAsString(processedContent);
+        loggy.debug('Preprocessed config file, removed unsupported fields');
+      }
+    } catch (e) {
+      loggy.warning('Failed to preprocess config file: $e');
+      // 预处理失败不应该阻止验证过程
+    }
+  }
+
+  /// 移除配置中不支持的字段
+  String _removeUnsupportedFields(String content) {
+    try {
+      final dynamic config = jsonDecode(content);
+      if (config is Map<String, dynamic>) {
+        _removeFieldRecursively(config, 'domain_resolver');
+        return jsonEncode(config);
+      }
+    } catch (e) {
+      loggy.debug('Failed to parse config as JSON, returning original content: $e');
+    }
+    return content;
+  }
+
+  /// 递归移除指定字段
+  void _removeFieldRecursively(dynamic obj, String fieldName) {
+    if (obj is Map<String, dynamic>) {
+      obj.remove(fieldName);
+      for (final value in obj.values) {
+        _removeFieldRecursively(value, fieldName);
+      }
+    } else if (obj is List) {
+      for (final item in obj) {
+        _removeFieldRecursively(item, fieldName);
+      }
+    }
   }
 
   @override

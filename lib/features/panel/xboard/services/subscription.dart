@@ -60,8 +60,7 @@ class Subscription {
         );
 
         // 更新活跃配置文件状态
-        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-        ref.read(activeProfileProvider.notifier).update((_) => newProfile);
+        await profileRepository.setAsActive(newProfile.id).run();
 
         // 显示成功提示
         _showSnackbar(

@@ -318,10 +318,10 @@ packages:
     dependency: transitive
     description:
       name: decimal
-      sha256: "24a261d5d5c87e86c7651c417a5dbdf8bcd7080dd592533910e8d0505a279f21"
+      sha256: fc706a5618b81e5b367b01dd62621def37abc096f2b46a9bd9068b64c1fa36d0
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.3"
+    version: "3.2.4"
   dependency_validator:
     dependency: "direct dev"
     description:
@@ -810,12 +810,11 @@ packages:
   humanizer:
     dependency: "direct main"
     description:
-      path: "."
-      ref: up-version
-      resolved-ref: "8ae61d68357fae197be7ee71d67ccb9498b9d5c7"
-      url: "https://github.com/alex-relov/humanizer"
-    source: git
-    version: "2.3.0"
+      name: humanizer
+      sha256: "534d4f97af39e42dff46107fdf9a518e08a4bc46b7cc91a31015784be6c058ef"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   iconsax_flutter:
     dependency: transitive
     description:
@@ -1236,10 +1235,10 @@ packages:
     dependency: transitive
     description:
       name: process
-      sha256: "21e54fd2faf1b5bdd5102afd25012184a6793927648ea81eea80552ac9405b32"
+      sha256: c6248e4526673988586e8c00bb22a49210c258dc91df5227d5da9748ecf79744
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "5.0.5"
   properties:
     dependency: transitive
     description:
@@ -1428,26 +1427,26 @@ packages:
     dependency: transitive
     description:
       name: sentry
-      sha256: "57514bc72d441ffdc463f498d6886aa586a2494fa467a1eb9d649c28010d7ee3"
+      sha256: "599701ca0693a74da361bc780b0752e1abc98226cf5095f6b069648116c896bb"
       url: "https://pub.dev"
     source: hosted
-    version: "7.20.2"
+    version: "8.14.2"
   sentry_dart_plugin:
     dependency: "direct main"
     description:
       name: sentry_dart_plugin
-      sha256: e81fa3e0ffabd04fdcfbfecd6468d4a342f02ab33edca09708c61bcd2be42b7d
+      sha256: "84436958fa9231e2e716be117a3b31695e54458b9f27039f76d14515e24248a6"
       url: "https://pub.dev"
     source: hosted
-    version: "1.7.1"
+    version: "2.4.1"
   sentry_flutter:
     dependency: "direct main"
     description:
       name: sentry_flutter
-      sha256: "9723d58470ca43a360681ddd26abb71ca7b815f706bc8d3747afd054cf639ded"
+      sha256: "5ba2cf40646a77d113b37a07bd69f61bb3ec8a73cbabe5537b05a7c89d2656f8"
       url: "https://pub.dev"
     source: hosted
-    version: "7.20.2"
+    version: "8.14.2"
   share_plus:
     dependency: "direct main"
     description:
@@ -2022,5 +2021,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=3.4.0 <4.0.0"
+  dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.24.0"

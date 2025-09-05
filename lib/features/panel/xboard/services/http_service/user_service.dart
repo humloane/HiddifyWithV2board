@@ -8,7 +8,7 @@ class UserService {
   Future<UserInfo?> fetchUserInfo(String accessToken) async {
     final result = await _httpService.getRequest(
       "/api/v1/user/info",
-      headers: {'Authorization': accessToken},
+      headers: {'Authorization': 'Bearer $accessToken'},
     );
     if (result.containsKey("data")) {
       final data = result["data"];
@@ -21,9 +21,10 @@ class UserService {
     try {
       final response = await _httpService.getRequest(
         "/api/v1/user/getSubscribe",
-        headers: {'Authorization': token},
+        headers: {'Authorization': 'Bearer $token'},
       );
-      return response['status'] == 'success';
+      // v2board API成功时返回包含data字段的响应
+      return response.containsKey('data') && response['data'] != null;
     } catch (_) {
       return false;
     }
@@ -32,7 +33,7 @@ class UserService {
   Future<String?> getSubscriptionLink(String accessToken) async {
     final result = await _httpService.getRequest(
       "/api/v1/user/getSubscribe",
-      headers: {'Authorization': accessToken},
+      headers: {'Authorization': 'Bearer $accessToken'},
     );
     // ignore: avoid_dynamic_calls
     return result["data"]["subscribe_url"] as String?;
@@ -41,7 +42,7 @@ class UserService {
   Future<String?> resetSubscriptionLink(String accessToken) async {
     final result = await _httpService.getRequest(
       "/api/v1/user/resetSecurity",
-      headers: {'Authorization': accessToken},
+      headers: {'Authorization': 'Bearer $accessToken'},
     );
     return result["data"] as String?;
   }

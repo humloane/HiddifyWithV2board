@@ -178,6 +178,10 @@ Future<void> lazyBootstrap(
     timeout: 1000,
   );
   await _init(
+    "extension database",
+    () => _initExtensionDatabase(container),
+  );
+  await _init(
     "sing-box",
     () => container.read(singboxServiceProvider).init(),
   );
@@ -245,5 +249,53 @@ Future<T?> _safeInit<T>(
     return await _init(name, initializer, timeout: timeout);
   } catch (e) {
     return null;
+  }
+}
+
+/// 初始化扩展数据库目录
+Future<void> _initExtensionDatabase(ProviderContainer container) async {
+  try {
+    final directories = await container.read(appDirectoriesProvider.future);
+    
+    // libcore会切换工作目录到workingDir，然后在相对路径"./data"中查找数据库
+    // 所以我们需要在workingDir中创建data目录和extensionData.db目录
+    final workingDataDir = Directory('${directories.workingDir.path}/data');
+    final workingExtensionDbDir = Directory('${workingDataDir.path}/extensionData.db');
+    
+    Logger.bootstrap.debug('Working directory: ${directories.workingDir.path}');
+    Logger.bootstrap.debug('Target data directory: ${workingDataDir.path}');
+    Logger.bootstrap.debug('Target extension database directory: ${workingExtensionDbDir.path}');
+    
+    // 创建working目录下的data目录
+    if (!await workingDataDir.exists()) {
+      await workingDataDir.create(recursive: true);
+      Logger.bootstrap.info('Created working data directory: ${workingDataDir.path}');
+    } else {
+      Logger.bootstrap.debug('Working data directory already exists: ${workingDataDir.path}');
+    }
+    
+    // 创建working目录下的extensionData.db目录（LevelDB需要目录而不是文件）
+    if (!await workingExtensionDbDir.exists()) {
+      await workingExtensionDbDir.create(recursive: true);
+      Logger.bootstrap.info('Created working extension database directory: ${workingExtensionDbDir.path}');
+    } else {
+      Logger.bootstrap.debug('Working extension database directory already exists: ${workingExtensionDbDir.path}');
+    }
+    
+    // 验证目录结构
+    final dataExists = await workingDataDir.exists();
+    final extensionDbExists = await workingExtensionDbDir.exists();
+    
+    Logger.bootstrap.info('Extension database initialization completed:');
+    Logger.bootstrap.info('  - Data directory exists: $dataExists');
+    Logger.bootstrap.info('  - Extension database directory exists: $extensionDbExists');
+    
+    if (!dataExists || !extensionDbExists) {
+      throw Exception('Failed to create required database directories');
+    }
+    
+  } catch (e, stackTrace) {
+    Logger.bootstrap.error('Failed to initialize extension database', e, stackTrace);
+    // 不抛出异常，避免阻止应用启动，但记录详细错误信息
   }
 }
